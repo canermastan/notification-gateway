@@ -23,7 +23,6 @@ public class NotificationService {
                 .onItem().ifNull().failWith(new NotificationException("Geçersiz API Key", Response.Status.UNAUTHORIZED.getStatusCode()))
                 .onItem().transformToMulti(project -> Multi.createFrom().iterable(project.channels))
                 .onItem().transformToUniAndMerge(channel -> {
-                    System.out.println("Gelen Seviye: " + request.severity().ordinal() + " - Kanal Sınırı: " + channel.minSeverity.ordinal());
                     if (request.severity().ordinal() >= channel.minSeverity.ordinal()) {
                         return providers.stream()
                                 .filter(p -> p.getType() == channel.type)
