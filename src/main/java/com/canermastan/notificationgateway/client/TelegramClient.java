@@ -7,7 +7,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.QueryParam;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
-@RegisterRestClient(baseUri = "https://api.telegram.org")
+@RegisterRestClient(configKey = "telegram-api")
 public interface TelegramClient {
     @POST
     @Path("/bot{token}/sendMessage")
