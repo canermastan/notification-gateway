@@ -7,12 +7,15 @@ import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.jboss.logging.Logger;
 
 @ApplicationScoped
 public class TelegramProvider implements NotificationProvider {
     @Inject
     @RestClient
     TelegramClient telegramClient;
+
+    private static final Logger LOGGER = Logger.getLogger(TelegramProvider.class);
 
     @Override
     public ChannelType getType() {
@@ -24,7 +27,7 @@ public class TelegramProvider implements NotificationProvider {
         return telegramClient.sendMessage(channel.channelToken, channel.targetIdentifier, message)
                 .replaceWithVoid()
                 .onFailure().recoverWithItem(err -> {
-                    System.out.println("Telegram hatası: " + err.getMessage());
+                    LOGGER.error("Telegram hatası: " + err.getMessage());
                     return null;
                 });
     }
