@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification Gateway Admin | Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .neo-card { border: 3px solid black; box-shadow: 8px 8px 0px 0px black; transition: all 0.2s; }
+        .neo-card:hover { transform: translate(-2px, -2px); box-shadow: 10px 10px 0px 0px black; }
+        .neo-btn { border: 2px solid black; box-shadow: 4px 4px 0px 0px black; }
+        .neo-btn:active { transform: translate(2px, 2px); box-shadow: 0px 0px 0px 0px black; }
+    </style>
+</head>
+<body class="bg-orange-50 p-8 font-mono">
+
+<div class="max-w-6xl mx-auto flex justify-between items-center mb-12">
+    <h1 class="text-4xl font-black uppercase tracking-tighter italic">Notıfıcatıon Gateway <span class="text-orange-600">Admın</span></h1>
+    <button onclick="toggleModal()" class="neo-btn bg-orange-500 text-white px-6 py-2 font-bold hover:bg-orange-600">
+        + NEW PROJECT
+    </button>
+</div>
+
+<div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+    <div class="neo-card bg-white p-6">
+        <p class="text-sm font-bold text-gray-500 uppercase">Actıve Projects</p>
+        <p class="text-4xl font-black">{projects.size}</p>
+    </div>
+</div>
+
+<div class="max-w-6xl mx-auto neo-card bg-white overflow-hidden">
+    <table class="w-full text-left">
+        <thead class="bg-black text-white">
+        <tr>
+            <th class="p-4 uppercase">Project Name</th>
+            <th class="p-4 uppercase">Channels</th>
+            <th class="p-4 uppercase text-center">Status</th>
+        </tr>
+        </thead>
+        <tbody class="divide-y-2 divide-black">
+        {#for project in projects}
+            <tr class="hover:bg-orange-50 transition-colors">
+                <td class="p-4 font-bold">{project.name}</td>
+                <td class="p-4 text-sm">
+                    {#for channel in project.channels}
+                        <span class="bg-gray-200 px-2 py-1 rounded border border-black text-xs mr-1">{channel.type}</span>
+                    {/for}
+                </td>
+                <td class="p-4 text-center">
+                        <span class="px-3 py-1 neo-btn text-xs font-bold {project.isActive ? 'bg-green-400' : 'bg-red-400'}">
+                            {project.isActive ? 'ACTIVE' : 'INACTIVE'}
+                        </span>
+                </td>
+            </tr>
+        {/for}
+        </tbody>
+    </table>
+</div>
+
+<div id="modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center p-4">
+    <div class="neo-card bg-white w-full max-w-md p-8">
+        <h2 class="text-2xl font-black mb-6 uppercase">Create New Project</h2>
+        <form action="/admin/projects" method="POST" class="space-y-4">
+            <div>
+                <label class="block font-bold mb-1">Project Name</label>
+                <input name="name" type="text" placeholder="örn: Mindora Prod" required
+                       class="w-full border-2 border-black p-2 focus:bg-orange-50 outline-none">
+            </div>
+
+            <div>
+                <label class="block font-bold mb-1 text-sm text-gray-600">Notification Channel</label>
+                <select name="type" class="w-full border-2 border-black p-2 bg-white outline-none">
+                    {#for type in channelTypes}
+                        <option value="{type}">{type}</option>
+                    {/for}
+                </select>
+            </div>
+
+            <hr class="border-black border-t-2 my-4">
+
+            <p class="text-xs font-bold text-orange-600 mb-2 underline italic">CHANNEL CREDENTIALS</p>
+            <div>
+                <label class="block font-bold mb-1 text-sm">Token / Webhook URL</label>
+                <input name="token" type="password" required
+                       class="w-full border-2 border-black p-2 focus:bg-orange-50 outline-none">
+            </div>
+            <div>
+                <label class="block font-bold mb-1 text-sm">Target (Chat ID / Channel Name)</label>
+                <input name="targetId" type="text" required
+                       class="w-full border-2 border-black p-2 focus:bg-orange-50 outline-none">
+            </div>
+
+            <div class="flex gap-4 mt-8">
+                <button type="submit" class="neo-btn bg-black text-white flex-1 py-2 font-bold hover:bg-gray-800 uppercase">
+                    Create & Generate Key
+                </button>
+                <button type="button" onclick="toggleModal()" class="neo-btn bg-white flex-1 py-2 font-bold uppercase">
+                    Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function toggleModal() {
+        const m = document.getElementById('modal');
+        m.classList.toggle('hidden');
+    }
+</script>
+</body>
+</html>
